@@ -1,4 +1,8 @@
 import * as React from 'react'
+import Table from "../../primitives/html/table/table"
+import TableHeader from "../../primitives/html/table/thead";
+import TableBody from "../../primitives/html/table/tbody";
+import Paginator from "../../complex/paginator";
 
 const throttle = require('lodash.throttle')
 
@@ -7,6 +11,16 @@ const throttle = require('lodash.throttle')
  */
 
 export interface InfiniteScrollProps {
+
+    /**
+     * Table columns
+     */
+    columns: any[]
+
+    /**
+     * Table columns
+     */
+    items: any[]
 
     /**
      * Should show loading
@@ -34,7 +48,7 @@ export interface InfiniteScrollProps {
     children?: any
 }
 
-export class InfiniteScroll extends React.Component<InfiniteScrollProps, {}> {
+export class Presentation extends React.Component<InfiniteScrollProps, {}> {
 
     public static defaultProps: Pick<InfiniteScrollProps, 'threshold' | 'throttle'> = {
         threshold: 100,
@@ -65,19 +79,45 @@ export class InfiniteScroll extends React.Component<InfiniteScrollProps, {}> {
             return
         }
 
-        let almostBelow = Math.abs(this.sentinel.clientHeight - (this.sentinel.scrollHeight - this.sentinel.scrollTop ))
+        let almostBelow = Math.abs(this.sentinel.clientHeight - (this.sentinel.scrollHeight - this.sentinel.scrollTop))
         if (almostBelow < this.props.threshold) {
-            this.props.onLoadMore()
+            // this.props.onLoadMore()
         }
+    }
+
+    getColumns = (): any[] => {
+        return this.props.columns;
+    }
+
+    getRows = (): any[] => {
+
+        let rows: any[] = []
+
+        this.props.items.map((item, index) => {
+
+            let row: any[] = []
+
+            this.props.columns.forEach((column) => {
+                row.push(item[column.fieldName])
+            })
+
+            rows.push(row)
+        })
+
+        return rows;
     }
 
     render() {
         return (
-            <div ref={i => this.sentinel = i} style={{height:'200px', overflow:'scroll'}}>
-                {this.props.children}
+            <div ref={i => this.sentinel = i} style={{height: '800px', overflow: 'auto'}}>
+                <Table>
+                    <TableHeader values={this.getColumns()}/>
+                    <TableBody values={this.getRows()}/>
+                </Table>
             </div>
+
         )
     }
 }
 
-export default React.createFactory(InfiniteScroll)
+export default React.createFactory(Presentation)

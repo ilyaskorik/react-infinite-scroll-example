@@ -1,9 +1,10 @@
+import "./sass/index.scss"
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { InfiniteScrollExample } from "./components/InfiniteScrollExample";
+import { Container } from "./components/ui/widgets/uiBrowser/container";
 
 ReactDOM.render(
-    <InfiniteScrollExample />,
+    <Container />,
     document.getElementById("example")
 );
